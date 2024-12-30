@@ -2,12 +2,17 @@ package com.rswang.springbootmall.dao.impl;
 
 
 import com.rswang.springbootmall.dao.ProductDao;
+import com.rswang.springbootmall.dto.ProductRequest;
 import com.rswang.springbootmall.model.Product;
 import com.rswang.springbootmall.rowmapper.ProductRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,5 +39,31 @@ public class ProductDaoImpl implements ProductDao {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public Integer createProduct(ProductRequest productRequest) {
+        String sql ="INSERT product (product_name, category, image_url, price, stock" +
+                ", description, created_date, last_modified_date) " +
+                "VALUES (:productName, :category, :imageUrl, :price, :stock" +
+                ", :description, :created_date, :last_modified_date)";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("productName", productRequest.getProductName());
+        params.put("category", productRequest.getCategory().toString());
+        params.put("imageUrl", productRequest.getImageUrl());
+        params.put("price", productRequest.getPrice());
+        params.put("stock", productRequest.getStock());
+        params.put("description", productRequest.getDescription());
+
+        Date now = new Date();
+        params.put("created_date", now);
+        params.put("last_modified_date", now);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder);
+
+        return keyHolder.getKey().intValue();
     }
 }
