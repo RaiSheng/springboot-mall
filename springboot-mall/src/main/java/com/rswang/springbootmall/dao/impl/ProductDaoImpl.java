@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -43,9 +42,7 @@ public class ProductDaoImpl implements ProductDao {
             map.put("search", "%" + search + "%");
         }
 
-        List<Product> productsList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
-
-        return productsList;
+        return namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
     }
 
     @Override
@@ -54,7 +51,7 @@ public class ProductDaoImpl implements ProductDao {
                 ", image_url, price, stock, description, created_date" +
                 ", last_modified_date from product where product_id = :productId";
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("productId", productId);
 
         List<Product> productList = namedParameterJdbcTemplate.query(sql, params, new ProductRowMapper());
