@@ -1,6 +1,7 @@
 package com.rswang.springbootmall.dao.impl;
 
 
+import com.rswang.springbootmall.constant.ProductCategory;
 import com.rswang.springbootmall.dao.ProductDao;
 import com.rswang.springbootmall.dto.ProductRequest;
 import com.rswang.springbootmall.model.Product;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -24,12 +26,22 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> getProducts(ProductCategory category, String search) {
         String sql = "select product_id, product_name, category" +
                 ", image_url, price, stock, description, created_date" +
-                ", last_modified_date from product";
+                ", last_modified_date from product WHERE 1=1";
 
         Map<String, Object> map = new HashMap<>();
+
+        if (category != null) {
+            sql = sql + " and category=:category";
+            map.put("category", category.name());
+        }
+
+        if (search != null) {
+            sql = sql + " and product_name like :search";
+            map.put("search", "%" + search + "%");
+        }
 
         List<Product> productsList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
 
