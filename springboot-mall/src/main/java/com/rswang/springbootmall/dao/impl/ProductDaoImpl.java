@@ -27,15 +27,7 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         // 查詢條件
-        if (productQueryParams.getCategory() != null) {
-            sql = sql + " and category=:category";
-            map.put("category", productQueryParams.getCategory().name());
-        }
-
-        if (productQueryParams.getSearch() != null) {
-            sql = sql + " and product_name like :search";
-            map.put("search", "%" + productQueryParams.getSearch() + "%");
-        }
+        sql = addFilterSql(sql, map, productQueryParams);
 
         return namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
     }
@@ -49,15 +41,7 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         // 查詢條件
-        if (productQueryParams.getCategory() != null) {
-            sql = sql + " and category=:category";
-            map.put("category", productQueryParams.getCategory().name());
-        }
-
-        if (productQueryParams.getSearch() != null) {
-            sql = sql + " and product_name like :search";
-            map.put("search", "%" + productQueryParams.getSearch() + "%");
-        }
+        sql = addFilterSql(sql, map, productQueryParams);
 
         // 排序
         sql = sql + " ORDER BY " + productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
@@ -142,5 +126,20 @@ public class ProductDaoImpl implements ProductDao {
         params.put("productId", productId);
 
         namedParameterJdbcTemplate.update(sql, params);
+    }
+
+    private String addFilterSql(String sql, Map<String, Object> params, ProductQueryParams productQueryParams) {
+        // 查詢條件
+        if (productQueryParams.getCategory() != null) {
+            sql = sql + " and category=:category";
+            params.put("category", productQueryParams.getCategory().name());
+        }
+
+        if (productQueryParams.getSearch() != null) {
+            sql = sql + " and product_name like :search";
+            params.put("search", "%" + productQueryParams.getSearch() + "%");
+        }
+
+        return sql;
     }
 }
