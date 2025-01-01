@@ -74,7 +74,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Integer createProduct(ProductRequest productRequest) {
-        String sql ="INSERT product (product_name, category, image_url, price, stock" +
+        String sql ="INSERT INTO product (product_name, category, image_url, price, stock" +
                 ", description, created_date, last_modified_date) " +
                 "VALUES (:productName, :category, :imageUrl, :price, :stock" +
                 ", :description, :created_date, :last_modified_date)";
