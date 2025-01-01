@@ -1,6 +1,7 @@
 package com.rswang.springbootmall.controller;
 
 import com.rswang.springbootmall.constant.ProductCategory;
+import com.rswang.springbootmall.dto.ProductQueryParams;
 import com.rswang.springbootmall.dto.ProductRequest;
 import com.rswang.springbootmall.model.Product;
 import com.rswang.springbootmall.service.ProductService;
@@ -23,7 +24,11 @@ public class ProductController {
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search
     ) {
-        List<Product> productList = productService.getProducts(category, search);
+        ProductQueryParams params = new ProductQueryParams();
+        params.setCategory(category);
+        params.setSearch(search);
+
+        List<Product> productList = productService.getProducts(params);
 
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
