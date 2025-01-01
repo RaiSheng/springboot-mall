@@ -13,10 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ProductDaoImpl implements ProductDao {
@@ -56,7 +53,7 @@ public class ProductDaoImpl implements ProductDao {
 
         List<Product> productList = namedParameterJdbcTemplate.query(sql, params, new ProductRowMapper());
 
-        if (productList != null && productList.size() > 0) {
+        if (!productList.isEmpty()) {
             return productList.get(0);
         } else {
             return null;
@@ -86,7 +83,7 @@ public class ProductDaoImpl implements ProductDao {
 
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder);
 
-        return keyHolder.getKey().intValue();
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
     @Override
